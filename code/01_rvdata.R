@@ -112,7 +112,8 @@ rv_stations <- GSINF%>%
                mutate(date=as.POSIXct(SDATE),
                       year=year(date),
                       decade = paste0(floor(year/10)*10,"'s"))%>%
-               st_as_sf(coords=c("MLONG","MLAT"),crs=latlong)
+               st_as_sf(coords=c("MLONG","MLAT"),crs=latlong)%>%
+               st_transform(CanProj)
 
 p1 <- ggplot()+
   geom_sf(data=bioregion,fill=NA)+
