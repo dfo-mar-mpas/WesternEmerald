@@ -66,4 +66,4 @@ p1 <- ggplot()+
   theme_bw();p1
 
 ggsave("output/readmeplot.png",p1,width=3.5,height=5,units="in",dpi=300) #there is some guess work with the height and width ratio. I am not sure of the best way to do it. 
-  
+knitr::plot_crop("output/readmeplot.png")  
