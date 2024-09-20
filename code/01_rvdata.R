@@ -7,6 +7,7 @@ library(sf)
 library(ggplot2)
 library(rnaturalearth)
 library(MarConsNetData)
+library(robis)
 
 #projections ------
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
@@ -98,14 +99,28 @@ GSINF <- GSINF%>%
           ungroup()
         
 
+# get obis data to merge taxonomy info with RV data (https://obis.org/dataset/7b6fa45f-e4fd-4e40-a537-97eb2f63c690)
+# this takes hours to download!
+obis <- occurrence(datasetid = "7b6fa45f-e4fd-4e40-a537-97eb2f63c690")
+obiskey <- obis |>
+  as.data.frame() |> 
+  mutate(SCI_NAME = toupper(scientificName)) |> 
+  select(SCI_NAME,family, order, class, phylum, kingdom) |> 
+  unique() |> 
+  group_by(SCI_NAME) |> 
+  mutate(n=n())
+
 #Now merge the files into a flattened dataframe -- this is long
 rvdata <- GSCAT%>% #catch data
-          left_join(.,GSMISSIONS)%>% #general info on the cruises
-          left_join(.,GSSPECIES%>%rename(SPEC = CODE))%>% #species IDs
-          left_join(.,GSINF)%>% #set specific data
-          mutate(std_count = TOTNO*1.75/DIST, #standardized to a set tow distance of 1.75 nm
-                 std_wgt = TOTWGT*1.75/DIST)%>%
-          st_as_sf(coords=c("MLONG","MLAT"),crs=latlong)#convert to sf object
+  left_join(.,GSMISSIONS)%>% #general info on the cruises
+  left_join(.,GSSPECIES%>%rename(SPEC = CODE))%>% #species IDs
+  left_join(.,GSINF)%>% #set specific data
+  mutate(std_count = TOTNO*1.75/DIST, #standardized to a set tow distance of 1.75 nm
+         std_wgt = TOTWGT*1.75/DIST)%>%
+  st_as_sf(coords=c("MLONG","MLAT"),crs=latlong) |> #convert to sf object
+  left_join(obiskey,
+            by = "SCI_NAME",
+            relationship = "many-to-many") # the many to many will duplicate some records because the taxonomy is imperfect on OBIS (see obiskey$n>1)
 
 #data frame of just the stations - note that rvdata is a lengthened dataframe so each species for each station, on each survey is repeated. there is no need for the duplicate entries 
 rv_stations <- GSINF%>%
