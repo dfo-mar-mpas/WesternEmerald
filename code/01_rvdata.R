@@ -108,7 +108,13 @@ obiskey <- obis |>
   select(SCI_NAME,family, order, class, phylum, kingdom) |> 
   unique() |> 
   group_by(SCI_NAME) |> 
-  mutate(n=n())
+  mutate(n=n()) |> 
+  rowwise() |>
+  mutate(na_count = sum(is.na(c_across(family:kingdom)))) |>  # Count the number of NAs in each row (excluding SCI_NAME)
+  group_by(SCI_NAME) |>
+  slice_min(na_count, with_ties = FALSE) |>  # Keep the row with the fewest NAs
+  ungroup() |>
+  select(-na_count)  # Remove the na_count column
 
 #Now merge the files into a flattened dataframe -- this is long
 rvdata <- GSCAT%>% #catch data
@@ -119,8 +125,14 @@ rvdata <- GSCAT%>% #catch data
          std_wgt = TOTWGT*1.75/DIST)%>%
   st_as_sf(coords=c("MLONG","MLAT"),crs=latlong) |> #convert to sf object
   left_join(obiskey,
-            by = "SCI_NAME",
-            relationship = "many-to-many") # the many to many will duplicate some records because the taxonomy is imperfect on OBIS (see obiskey$n>1)
+            by = "SCI_NAME")
+
+fish <- rvdata |> 
+  filter(class %in% c("Teleostei","Elasmobranchii"))
+
+notfish <- rvdata |> 
+  filter(!class %in% c("Teleostei","Elasmobranchii"))
+
 
 #data frame of just the stations - note that rvdata is a lengthened dataframe so each species for each station, on each survey is repeated. there is no need for the duplicate entries 
 rv_stations <- GSINF%>%
