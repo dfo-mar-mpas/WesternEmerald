@@ -7,6 +7,7 @@ library(sf)
 library(ggplot2)
 library(rnaturalearth)
 library(MarConsNetData)
+library(robis)
 
 #projections ------
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
@@ -106,6 +107,8 @@ rvdata <- GSCAT%>% #catch data
           mutate(std_count = TOTNO*1.75/DIST, #standardized to a set tow distance of 1.75 nm
                  std_wgt = TOTWGT*1.75/DIST)%>%
           st_as_sf(coords=c("MLONG","MLAT"),crs=latlong)#convert to sf object
+
+##load the OBIS data for the RV records and merge the full taxonomic information to then filter out fish and not fish. 
 
 #data frame of just the stations - note that rvdata is a lengthened dataframe so each species for each station, on each survey is repeated. there is no need for the duplicate entries 
 rv_stations <- GSINF%>%
