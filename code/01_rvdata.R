@@ -106,19 +106,10 @@ GSINF <- GSINF%>%
 
 
 # obis <- occurrence(datasetid = "7b6fa45f-e4fd-4e40-a537-97eb2f63c690")
-# obiskey <- obis |>
-#   as.data.frame() |> 
-#   mutate(SCI_NAME = toupper(scientificName)) |> 
-#   select(SCI_NAME,family, order, class, phylum, kingdom) |> 
-#   unique() |> 
-#   group_by(SCI_NAME) |> 
-#   mutate(n=n()) |> 
-#   rowwise() |>
-#   mutate(na_count = sum(is.na(c_across(family:kingdom)))) |>  # Count the number of NAs in each row (excluding SCI_NAME)
-#   group_by(SCI_NAME) |>
-#   slice_min(na_count, with_ties = FALSE) |>  # Keep the row with the fewest NAs
-#   ungroup() |>
-#   select(-na_count)  # Remove the na_count column
+
+#save(obis,file = "output/obis.RData")
+
+
 # 
 # #Now merge the files into a flattened dataframe -- this is long
 # rvdata <- GSCAT%>% #catch data
@@ -132,6 +123,22 @@ GSINF <- GSINF%>%
 #             by = "SCI_NAME")
 
 load("data/rvdata.RData")
+
+# load ("output/obis.RData")
+# obiskey <- obis |>
+#   as.data.frame() |> 
+#   mutate(SCI_NAME = toupper(scientificName)) |> 
+#   select(SCI_NAME,family, order, class, phylum, kingdom) |> 
+#   unique() |> 
+#   group_by(SCI_NAME) |> 
+#   mutate(n=n()) |> 
+#   rowwise() |>
+#   mutate(na_count = sum(is.na(c_across(family:kingdom)))) |>  # Count the number of NAs in each row (excluding SCI_NAME)
+#   group_by(SCI_NAME) |>
+#   slice_min(na_count, with_ties = FALSE) |>  # Keep the row with the fewest NAs
+#   ungroup() |>
+#   select(-na_count)  # Remove the na_count column
+
 
 #save(rvdata,file="data/rvdata.RData") 
 fish <- rvdata |> 
