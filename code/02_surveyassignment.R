@@ -178,7 +178,8 @@ rv_count <- rvstations%>%
             group_by(YEAR,buffer)%>%
             summarise(count=n())%>%
             ungroup()%>%
-            data.frame()
+            data.frame()%>%
+            mutate(buffer=factor(buffer,levels=c("0","10","50","100","200","Outside")))
             
 count_plot <- ggplot(data=rv_count,aes(x=YEAR,y=count,group=buffer,fill=buffer))+
   geom_line(aes(col=buffer))+
