@@ -185,3 +185,6 @@ ggplot(data=rv_count,aes(x=YEAR,y=count,group=buffer,fill=buffer))+
   geom_point(shape=21,col="black")+
   theme_bw()+
   labs(fill="Buffer (km)",col="Buffer (km)",y="Number of stations",x="")
+
+#save a datafile so you can use it in your analyses. 
+save(rv_df,file="data/rv_data_processed.RData")
