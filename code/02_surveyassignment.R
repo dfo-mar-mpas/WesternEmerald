@@ -115,6 +115,8 @@ buffer_poly <- rbind(webca%>%
                mutate(buffer=c(0,10,50,100,200))%>%
                arrange(-buffer)
 
+st_write(buffer_poly,"data/shapefiles/webca_buffers.shp")
+
 
 ##assign rvsets to the network and classifications
 
