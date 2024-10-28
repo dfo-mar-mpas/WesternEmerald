@@ -74,7 +74,7 @@ load("data/rvdata.RData")
 
 #pull out Western Emerald Bank Polygon
 webca <- read_sf("data/shapefiles/webca.shp")%>% #note that this is different than pulling from 'network' as this shape file has two parts, which are needed to do the buffer properly
-         st_transfrom(CanProj)
+         st_transform(CanProj)
           
 
 #create different buffered distances -----

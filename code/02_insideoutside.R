@@ -71,10 +71,10 @@ rv_stations_with_network <- st_join(rv_stations, network, join = st_intersects)
 # Add columns to classify points ----
 rv_stations_with_network <- rv_stations_with_network %>%
   mutate(
-    in_network = ifelse(!is.na(SiteName_E), "In Draft Network", "Outside Network"),
+    in_network = ifelse(!is.na(SiteName_E), TRUE, FALSE),
     in_western_emerald_bank = ifelse(SiteName_E == "Western/Emerald Banks Marine Refuge", 
                                      "Western Emerald Bank", 
-                                     in_network)
+                                     ifelse(in_network, "In Draft Network", "Outside Network"))
   )
 
 # Plot the result ----
