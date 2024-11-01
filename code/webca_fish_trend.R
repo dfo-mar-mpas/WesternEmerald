@@ -1,5 +1,5 @@
 
-process_species <- function(x,species_name,return_var = all) {
+process_species <- function(x,species,return_var = all) {
   
   #first process
   sp_df <- x%>%
@@ -150,133 +150,6 @@ webca_fish_trend <- function(x,species,title){
   
 }
 
-#boot_fun <- function(x,n_boot=1000,outlier_trim=TRUE){
-  # Assuming x is your dataframe and you have already defined the reference period
-  reference_period <- "pre-collapse"
-  target_periods <- c("post-collapse", "recent")
-  
-  # Initialize an empty list to store results
-  boot_results <- list()
-  
-  # Loop through each target period
-  for (target in target_periods) {
-    # Filter data for the reference and target periods
-    data_ref <- x %>% filter(period == reference_period)
-    data_target <- x %>% filter(period == target)
-    
-    
-    if(outlier_trim){
-      
-      # totwgt <- c(data_ref$TOTWGT,data_target$TOTWGT)
-      # totno <- c(data_ref$TOTNO,data_target$TOTNO)
-      # 
-      # #identify outliers that are from the full data range of observations
-      # outlier_wgt <- data.frame(min = (quantile(totwgt, 0.25) - 1.5 * IQR(totwgt)),
-      #                           max = (quantile(totwgt, 0.25) + 1.5 * IQR(totwgt)))
-      # 
-      # outlier_no <- data.frame(min = (quantile(totno, 0.25) - 1.5 * IQR(totno)),
-      #                           max = (quantile(totno, 0.25) + 1.5 * IQR(totno)))
-      # 
-      # data_ref <- data_ref %>%
-      #   mutate(
-      #     # Calculate the IQR and replace outliers in TOTWGT with NA
-      #     TOTWGT = ifelse(
-      #       TOTWGT < outlier_wgt$min |
-      #         TOTWGT > outlier_wgt$max,
-      #       NA, 
-      #       TOTWGT
-      #     ),
-      #     # Calculate the IQR and replace outliers in TOTNO with NA
-      #     TOTNO = ifelse(
-      #       TOTNO < outlier_no$min |
-      #         TOTNO > outlier_no$max,
-      #       NA, 
-      #       TOTNO
-      #     )
-      #   )
-      # 
-      # data_target <- data_target%>%   
-      #   mutate(
-      #     # Calculate the IQR and replace outliers in TOTWGT with NA
-      #     TOTWGT = ifelse(
-      #       TOTWGT < outlier_wgt$min |
-      #         TOTWGT > outlier_wgt$max,
-      #       NA, 
-      #       TOTWGT
-      #     ),
-      #     # Calculate the IQR and replace outliers in TOTNO with NA
-      #     TOTNO = ifelse(
-      #       TOTNO < outlier_no$min |
-      #         TOTNO > outlier_no$max,
-      #       NA, 
-      #       TOTNO
-      #     )
-      #   )
-      
-      data_ref <- data_ref %>%
-        mutate(
-          # Calculate the IQR and replace outliers in TOTWGT with NA
-          TOTWGT = ifelse(
-            TOTWGT < (quantile(TOTWGT, 0.25) - 1.5 * IQR(TOTWGT)) |
-              TOTWGT > (quantile(TOTWGT, 0.75) + 1.5 * IQR(TOTWGT)),
-            NA,
-            TOTWGT
-          ),
-          # Calculate the IQR and replace outliers in TOTNO with NA
-          TOTNO = ifelse(
-            TOTNO < (quantile(TOTNO, 0.25) - 1.5 * IQR(TOTNO)) |
-              TOTNO > (quantile(TOTNO, 0.75) + 1.5 * IQR(TOTNO)),
-            NA,
-            TOTNO
-          )
-        )
-      
-      data_target <- data_target%>%
-        
-        mutate(
-          # Calculate the IQR and replace outliers in TOTWGT with NA
-          TOTWGT = ifelse(
-            TOTWGT < (quantile(TOTWGT, 0.25) - 1.5 * IQR(TOTWGT)) |
-              TOTWGT > (quantile(TOTWGT, 0.75) + 1.5 * IQR(TOTWGT)),
-            NA,
-            TOTWGT
-          ),
-          # Calculate the IQR and replace outliers in TOTNO with NA
-          TOTNO = ifelse(
-            TOTNO < (quantile(TOTNO, 0.25) - 1.5 * IQR(TOTNO)) |
-              TOTNO > (quantile(TOTNO, 0.75) + 1.5 * IQR(TOTNO)),
-            NA,
-            TOTNO
-          )
-        )
-    }
-    
-    dim_ref <- nrow(data_ref)
-    dim_target <- nrow(data_target)
-    
-    out <- list()
-    
-    for(i in 1:n_boot){
-      
-      data_ref_boot <- data_ref[sample(1:dim_ref,size = dim_ref,replace = TRUE),]
-      data_target_boot <- data_target[sample(1:dim_target,size = dim_target,replace = TRUE),]
-      
-      out[[i]] <- data.frame(boot=i,period=target,
-                             wgt_target = mean(data_target_boot$TOTWGT,na.rm=T),
-                             wgt_reference = mean(data_ref_boot$TOTWGT,na.rm=T),
-                             count_target = mean(data_target_boot$TOTNO,na.rm=T),
-                             count_reference = mean(data_ref_boot$TOTNO,na.rm=T))%>%
-        mutate(prec_wgt_diff = ((wgt_reference-wgt_target)/wgt_reference)*100,
-               prec_count_diff = ((count_reference-count_target)/count_reference)*100)
-    }
-    
-    out_df <- do.call('rbind',out)
-    
-    return(out_df)
-    
-  }
-}
-
 boot_fun <- function(x, max_boot = 1000, outlier_trim = TRUE) {
   reference_period <- "pre-collapse"
   target_periods <- c("post-collapse", "recent")
@@ -314,9 +187,7 @@ boot_fun <- function(x, max_boot = 1000, outlier_trim = TRUE) {
     
     # Bootstrap sampling with progress bar
     boot_out <- future_map_dfr(seq_len(n_boot), function(i) {
-      # Set a seed for reproducibility
-      set.seed(i)  # Set a unique seed for each bootstrap iteration
-      
+      set.seed(i)  # Set seed for reproducibility for each bootstrapping iteration
       ref_sample <- sample(n_ref, replace = TRUE)
       target_sample <- sample(n_target, replace = TRUE)
       
@@ -332,10 +203,138 @@ boot_fun <- function(x, max_boot = 1000, outlier_trim = TRUE) {
           prec_wgt_diff = ((wgt_reference - wgt_target) / wgt_reference) * 100,
           prec_count_diff = ((count_reference - count_target) / count_reference) * 100
         )
-    }, .progress = TRUE)  # Enable progress bar without specifying a handler
+    }, .progress = TRUE)  # Remove .seed argument
     
     boot_results[[target]] <- boot_out
   }
   
   bind_rows(boot_results)
 }
+
+
+# #boot_fun <- function(x,n_boot=1000,outlier_trim=TRUE){
+#   # Assuming x is your dataframe and you have already defined the reference period
+#   reference_period <- "pre-collapse"
+#   target_periods <- c("post-collapse", "recent")
+#   
+#   # Initialize an empty list to store results
+#   boot_results <- list()
+#   
+#   # Loop through each target period
+#   for (target in target_periods) {
+#     # Filter data for the reference and target periods
+#     data_ref <- x %>% filter(period == reference_period)
+#     data_target <- x %>% filter(period == target)
+#     
+#     
+#     if(outlier_trim){
+#       
+#       # totwgt <- c(data_ref$TOTWGT,data_target$TOTWGT)
+#       # totno <- c(data_ref$TOTNO,data_target$TOTNO)
+#       # 
+#       # #identify outliers that are from the full data range of observations
+#       # outlier_wgt <- data.frame(min = (quantile(totwgt, 0.25) - 1.5 * IQR(totwgt)),
+#       #                           max = (quantile(totwgt, 0.25) + 1.5 * IQR(totwgt)))
+#       # 
+#       # outlier_no <- data.frame(min = (quantile(totno, 0.25) - 1.5 * IQR(totno)),
+#       #                           max = (quantile(totno, 0.25) + 1.5 * IQR(totno)))
+#       # 
+#       # data_ref <- data_ref %>%
+#       #   mutate(
+#       #     # Calculate the IQR and replace outliers in TOTWGT with NA
+#       #     TOTWGT = ifelse(
+#       #       TOTWGT < outlier_wgt$min |
+#       #         TOTWGT > outlier_wgt$max,
+#       #       NA, 
+#       #       TOTWGT
+#       #     ),
+#       #     # Calculate the IQR and replace outliers in TOTNO with NA
+#       #     TOTNO = ifelse(
+#       #       TOTNO < outlier_no$min |
+#       #         TOTNO > outlier_no$max,
+#       #       NA, 
+#       #       TOTNO
+#       #     )
+#       #   )
+#       # 
+#       # data_target <- data_target%>%   
+#       #   mutate(
+#       #     # Calculate the IQR and replace outliers in TOTWGT with NA
+#       #     TOTWGT = ifelse(
+#       #       TOTWGT < outlier_wgt$min |
+#       #         TOTWGT > outlier_wgt$max,
+#       #       NA, 
+#       #       TOTWGT
+#       #     ),
+#       #     # Calculate the IQR and replace outliers in TOTNO with NA
+#       #     TOTNO = ifelse(
+#       #       TOTNO < outlier_no$min |
+#       #         TOTNO > outlier_no$max,
+#       #       NA, 
+#       #       TOTNO
+#       #     )
+#       #   )
+#       
+#       data_ref <- data_ref %>%
+#         mutate(
+#           # Calculate the IQR and replace outliers in TOTWGT with NA
+#           TOTWGT = ifelse(
+#             TOTWGT < (quantile(TOTWGT, 0.25) - 1.5 * IQR(TOTWGT)) |
+#               TOTWGT > (quantile(TOTWGT, 0.75) + 1.5 * IQR(TOTWGT)),
+#             NA,
+#             TOTWGT
+#           ),
+#           # Calculate the IQR and replace outliers in TOTNO with NA
+#           TOTNO = ifelse(
+#             TOTNO < (quantile(TOTNO, 0.25) - 1.5 * IQR(TOTNO)) |
+#               TOTNO > (quantile(TOTNO, 0.75) + 1.5 * IQR(TOTNO)),
+#             NA,
+#             TOTNO
+#           )
+#         )
+#       
+#       data_target <- data_target%>%
+#         
+#         mutate(
+#           # Calculate the IQR and replace outliers in TOTWGT with NA
+#           TOTWGT = ifelse(
+#             TOTWGT < (quantile(TOTWGT, 0.25) - 1.5 * IQR(TOTWGT)) |
+#               TOTWGT > (quantile(TOTWGT, 0.75) + 1.5 * IQR(TOTWGT)),
+#             NA,
+#             TOTWGT
+#           ),
+#           # Calculate the IQR and replace outliers in TOTNO with NA
+#           TOTNO = ifelse(
+#             TOTNO < (quantile(TOTNO, 0.25) - 1.5 * IQR(TOTNO)) |
+#               TOTNO > (quantile(TOTNO, 0.75) + 1.5 * IQR(TOTNO)),
+#             NA,
+#             TOTNO
+#           )
+#         )
+#     }
+#     
+#     dim_ref <- nrow(data_ref)
+#     dim_target <- nrow(data_target)
+#     
+#     out <- list()
+#     
+#     for(i in 1:n_boot){
+#       
+#       data_ref_boot <- data_ref[sample(1:dim_ref,size = dim_ref,replace = TRUE),]
+#       data_target_boot <- data_target[sample(1:dim_target,size = dim_target,replace = TRUE),]
+#       
+#       out[[i]] <- data.frame(boot=i,period=target,
+#                              wgt_target = mean(data_target_boot$TOTWGT,na.rm=T),
+#                              wgt_reference = mean(data_ref_boot$TOTWGT,na.rm=T),
+#                              count_target = mean(data_target_boot$TOTNO,na.rm=T),
+#                              count_reference = mean(data_ref_boot$TOTNO,na.rm=T))%>%
+#         mutate(prec_wgt_diff = ((wgt_reference-wgt_target)/wgt_reference)*100,
+#                prec_count_diff = ((count_reference-count_target)/count_reference)*100)
+#     }
+#     
+#     out_df <- do.call('rbind',out)
+#     
+#     return(out_df)
+#     
+#   }
+# }

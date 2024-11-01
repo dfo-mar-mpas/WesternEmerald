@@ -44,6 +44,15 @@ rv_df <- rv_df%>%
 focal_sp <- read.csv("data/focal_sp.csv")%>%
             mutate(bioclass_comp = ifelse(SCI_NAME == "AMBLYRAJA RADIATA",FALSE,TRUE))# there are no AMBLYRAJA RADIATA detected within the MPA for classification 
 
+
+##example of how to pull some plots
+
+cod_plots <- webca_fish_trend(rv_df,species="GADUS MORHUA","Atlantic cod")
+
+cod_plots$point_plot #the plot you can make better
+
+cod_plots$sp_df #the data you could use to make the plot better!
+
 rv_fish <- rv_df%>%
            filter(SCI_NAME %in% focal_sp$SCI_NAME)
 
@@ -67,11 +76,11 @@ df_1 <- rv_df %>%
   select(species = SCI_NAME, classification, period, distance_category, TOTWGT, TOTNO) %>%
   group_by(species, distance_category, classification) %>%
   group_modify(~ {
-    with_progress({ # this only sort of works - at least tells you if something is frozen
+    with_progress({
       boot_fun(.x)
     })
   }) %>%
   ungroup() %>%
   data.frame()
 
-save(df_1,file="output/bootstrapped_differences2.RData")
+save(df_1,file="output/bootstrapped_differences3.RData")
