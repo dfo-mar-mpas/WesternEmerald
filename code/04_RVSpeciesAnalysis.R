@@ -42,8 +42,19 @@ rv_df <- rv_df%>%
 
 #'common' grounfish species -- from Shackell et al. 2021
 focal_sp <- read.csv("data/focal_sp.csv")%>%
-            mutate(bioclass_comp = ifelse(SCI_NAME == "AMBLYRAJA RADIATA",FALSE,TRUE))# there are no AMBLYRAJA RADIATA detected within the MPA for classification 
-
+            left_join(.,rv_df%>%
+                        data.frame()%>%
+                        distinct(SCI_NAME,.keep_all = TRUE)%>%
+                        dplyr::select(SCI_NAME,COMM))%>%
+             mutate(comm = tolower(COMM), #clean up the names
+                    comm = str_to_title(comm),
+                    comm = case_when(grepl("ERINACEA",COMM) ~ "Little Skate",
+                                     grepl("GOOSEFISH",COMM) ~ "Monkfish",
+                                     grepl("LIMANDA",COMM) ~ "Yellowtail Flounder",
+                                     grepl("UNSEPARATED",COMM) ~ "Redfish",
+                                     grepl("Urophycis",COMM) ~ "Longfin Hake",
+                                     grepl("SQUIRREL",COMM) ~ "Red Hake",
+                                     TRUE ~ comm))
 
 ##example of how to pull some plots
 
@@ -58,29 +69,58 @@ rv_fish <- rv_df%>%
 
 ## run bootstrap analysis on the rv data
 
-# Set up future for parallel processing
-plan(multisession)  # Adjust this based on your machine
+# # Set up future for parallel processing
+# plan(multisession)  # Adjust this based on your machine
+# 
+# # Initialize progress handlers
+# handlers(global = TRUE)  # Use the default console handler
+# 
+# #This is as optimized as I can make it, but it still takes time. 
+# boot_dat <- rv_df %>%
+#   filter(SCI_NAME %in% focal_sp$SCI_NAME, 
+#          !is.na(distance_category),
+#          classification %in% c("WSS/Outer BoF", "WSS: Banks/Inner BoF")) %>%
+#   data.frame() %>%
+#   mutate(period = case_when(YEAR < 1993 ~ "pre-collapse",
+#                             YEAR > 1992 & YEAR < 2006 ~ "post-collapse",
+#                             YEAR > 2005 ~ "recent")) %>%
+#   select(species = SCI_NAME, classification, period, distance_category, TOTWGT, TOTNO) %>%
+#   group_by(species, distance_category, classification) %>%
+#   group_modify(~ {
+#     with_progress({
+#       boot_fun(.x)
+#     })
+#   }) %>%
+#   ungroup() %>%
+#   data.frame()%>%
+#   left_join(focal_sp%>%dplyr::select(species=SCI_NAME,comm))
+# 
+# save(boot_dat,file="output/bootstrapped_differences.RData")
 
-# Initialize progress handlers
-handlers(global = TRUE)  # Use the default console handler
+#load the bootstrap analysis outputs
+load("output/bootstrapped_differences.RData")
 
-#This is as optimized as I can make it, but it still takes time. 
-df_1 <- rv_df %>%
-  filter(SCI_NAME %in% focal_sp$SCI_NAME, 
-         !is.na(distance_category),
-         classification %in% c("WSS/Outer BoF", "WSS: Banks/Inner BoF")) %>%
-  data.frame() %>%
-  mutate(period = case_when(YEAR < 1993 ~ "pre-collapse",
-                            YEAR > 1992 & YEAR < 2006 ~ "post-collapse",
-                            YEAR > 2005 ~ "recent")) %>%
-  select(species = SCI_NAME, classification, period, distance_category, TOTWGT, TOTNO) %>%
-  group_by(species, distance_category, classification) %>%
-  group_modify(~ {
-    with_progress({
-      boot_fun(.x)
-    })
-  }) %>%
-  ungroup() %>%
-  data.frame()
+boot_df <- boot_dat%>%
+           group_by(species,distance_category,classification,period)%>%
+           summarise(mean_diff_wgt = mean(prec_wgt_diff,na.rm=T),
+                     lower_diff_wgt = quantile(prec_wgt_diff,0.1,na.rm=T),
+                     upper_diff_wgt = quantile(prec_wgt_diff,0.9,na.rm=T),
+                     mean_diff_cnt = mean(prec_count_diff,na.rm=T),
+                     lower_diff_cnt = quantile(prec_count_diff,0.1,na.rm=T),
+                     upper_diff_cnt = quantile(prec_count_diff,0.9,na.rm=T))%>%
+           ungroup()%>%
+           data.frame()
 
-save(df_1,file="output/bootstrapped_differences3.RData")
+ ggplot(boot_df%>%filter(distance_category == 0), aes(x = mean_diff_wgt / 100, y = species, shape = period, fill = value)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  facet_wrap(~classification, scales = "free_x") +
+  scale_shape_manual(values = c(21, 22)) +  # Use open shapes that accept fill
+  scale_fill_manual(values = c("Inside" = "blue", "Outside" = "red")) +  # Fill colors for value
+  scale_x_continuous(labels = scales::percent_format()) +  # Format x-axis as a percentage
+  labs(x = "% Change from Pre-collapse", y = "Distance (km) from refuge", 
+       fill = "Value (Inside/Outside)", shape = "Period") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = "white"), legend.position = "right") +
+  guides(fill = guide_legend(override.aes = list(shape = 21)),  # Ensure shapes appear in one legend
+         shape = guide_legend(override.aes = list(fill = "black"))) 
