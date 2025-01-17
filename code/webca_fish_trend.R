@@ -1,5 +1,5 @@
 
-process_species <- function(x,species,return_var = all) {
+process_species <- function(x,species,return_var = "all") {
   
   #first process
   sp_df <- x%>%
@@ -129,7 +129,7 @@ webca_fish_trend <- function(x,species,title){
     theme_bw()+
     scale_y_log10()+
     geom_vline(xintercept=c(1987,2017),lty=2)+
-    labs(col="Distance from MR",y="Mean abundance",x="",title="Atlantic cod")+
+    labs(col="Distance from MR",y="Mean abundance",x="",title=species)+
     theme(strip.background = element_rect(fill="white"))
   
   #generate the outputs as a list
