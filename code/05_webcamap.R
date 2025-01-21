@@ -8,6 +8,7 @@ library(rnaturalearth)
 library(MarConsNetData)
 library(patchwork)
 library(ggspatial)
+library(viridis)
 
 s2_as_sf = FALSE
 
@@ -37,8 +38,13 @@ bioclass <- read_sf("data/shapefiles/bioclassification_clusters.shp")%>%
               bioregion == 'MAR' & cl == 4 ~ 'ESS: Banks',
               bioregion == 'MAR' & cl == 3 ~ 'ESS',
               bioregion == 'MAR' & cl == 2 ~ 'Laurentian Channel/Shelf Break',
-              bioregion == 'MAR' & cl == 1 ~ 'Slope'))%>%
+              bioregion == 'MAR' & cl == 1 ~ 'Slope'
+              ),
+              classification = factor(classification,levels=c('WSS/Outer BoF','WSS: Banks/Inner BoF','ESS: Banks',
+                                                             'ESS','Laurentian Channel/Shelf Break','Slope')))%>%
             st_transform(CanProj)
+
+bioclass_palette <- viridis(6)
 
 webca_class <- bioclass%>%
                filter(classification %in% c('WSS/Outer BoF','WSS: Banks/Inner BoF'))%>%
@@ -86,22 +92,25 @@ p1 <- ggplot()+
       theme_bw()+
       coord_sf(expand=0,xlim=webca_lim[c(1,3)],ylim=webca_lim[c(2,4)])+
       theme(legend.position = "inside",
-            legend.position.inside = c(0.8,0.1),
+            legend.position.inside = c(0.76,0.1),
             legend.title=element_blank(),
             legend.background = element_blank())+
-      annotation_scale()
+      annotation_scale()+
+      scale_fill_manual(values = bioclass_palette[c(1,6)] ) 
 
 #plot of the larger bioregion
 p2 <- ggplot()+
   geom_sf(data=bioregion,fill=NA)+
   geom_sf(data=basemap)+
+  geom_sf(data=bioclass,aes(fill=classification),alpha=0.4,lwd=0.01)+
   geom_sf(data=webca_class,aes(fill=classification))+
   geom_sf(data=network,fill=NA)+
   geom_sf(data=webca_lim%>%st_as_sfc(),fill=NA,linewidth=0.8,lty=2)+
   theme_bw()+
   coord_sf(expand=0,xlim=region_lim[c(1,3)],ylim=region_lim[c(2,4)])+
   theme(legend.position = "none")+
-  annotation_scale(location="br")
+  annotation_scale(location="br")+
+  scale_fill_manual(values= bioclass_palette[c(1,6,2:5)])
 
 combo <- p1+p2+plot_layout(ncol=2)
 
