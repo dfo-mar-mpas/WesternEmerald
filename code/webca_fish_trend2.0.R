@@ -6,7 +6,7 @@ process_species <- function(x, species, return_var = "all") {
       SCI_NAME == species, # Select the species of interest
       !is.na(distance_category), # Exclude rows with missing distance_category
       classification %in% c("WSS/Outer BoF", "WSS: Banks/Inner BoF") # Focus on two major classes
-    ) %>%
+      ) %>%
     data.frame() %>% # Remove 'sf' dataframe syntax
     group_by(distance_category, classification, YEAR) %>%
     summarise(
@@ -46,7 +46,33 @@ process_species <- function(x, species, return_var = "all") {
       species = species
     )
 
-
+  plot_df <- sp_df%>%
+    dplyr::select(classification,period,mean_abund,mean_count,period,dist_100,dist_50)%>%
+    gather(dist_thresh,value,-c(classification,period,mean_abund,mean_count))%>%
+    filter(!is.na(value))%>%
+    group_by(period,classification,dist_thresh,value)%>%
+    summarize(sd_abund=sd(mean_abund),
+              mean_abund=mean(mean_abund),
+              sd_count=sd(mean_count),
+              mean_count=mean(mean_count))%>%
+    ungroup()%>%
+    data.frame()%>%
+    mutate(period=factor(period,levels=c("pre-collapse","post-collapse","recent")),
+           dist_cat = factor(as.numeric(gsub("dist_","",dist_thresh)),
+                             levels=c(50,100)))%>%
+    mutate(species=species)
+  
+  baseline_df <- plot_df %>%
+    filter(period == "pre-collapse") %>%
+    select(classification, value, dist_cat, baseline_mean_abund = mean_abund)
+  
+  diff_df <- plot_df %>%
+    left_join(baseline_df, by = c("classification", "value", "dist_cat"))%>%
+    filter(period != "pre-collapse") %>% # Exclude the baseline period
+    mutate(perc_change_abund = 100 * (mean_abund - baseline_mean_abund) / baseline_mean_abund) %>%
+    select(period, classification, value, dist_cat, perc_change_abund)%>%
+    mutate(species=species)
+  
 #return outputs --- 
 
 if(return_var == "all") {output = list()
