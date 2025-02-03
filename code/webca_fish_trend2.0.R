@@ -108,7 +108,7 @@ webca_fish_trend <- function(x,species,title){
     facet_grid(classification ~ period, scales = "free_y") +
     labs(x = "Distance Threshold", y = "Mean Abundance", fill = "", shape = "", group = "", title = title) +
     scale_shape_manual(values = c(21, 22)) +  # Distinguish between inside/outside
-    scale_fill_manual(values = c("inside" = "red", "outside" = "blue")) +  # Map "inside" to red and "outside" to blue
+    scale_fill_manual(values = c("Inside" = "red", "Outside" = "blue")) +  # Map "inside" to red and "outside" to blue
     theme_bw() +
     theme(strip.background = element_rect(fill = "white"))
   
@@ -139,7 +139,7 @@ webca_fish_trend <- function(x,species,title){
     theme(strip.background = element_rect(fill = "white"))
   
   #fitted trend line plot
-  line_plot <- ggplot(data=sp_df,aes(x=YEAR,y=mean_count,col=distance_cat,group=distance_cat))+
+  line_plot <- ggplot(data=sp_df,aes(x=YEAR,y=mean_count,col=distance_category,group=distance_category))+
     geom_smooth(method="lm",se=FALSE)+
     geom_smooth(data=sp_df%>%filter(distance_category==0),lwd=2,method="lm",alpha=0.3)+
     facet_wrap(~classification,ncol=1,scales="free_y")+
