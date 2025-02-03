@@ -122,7 +122,7 @@ webca_fish_trend <- function(x,species,title){
     theme(strip.background = element_rect(fill="white"))
   
   #fitted trend line plot
-  line_plot <- ggplot(data=sp_df,aes(x=YEAR,y=mean_count,col=distance_cat,group=distance_cat))+
+  line_plot <- ggplot(data=sp_df,aes(x=YEAR,y=mean_count,col=distance_category,group=distance_category))+
     geom_smooth(method="lm",se=FALSE)+
     geom_smooth(data=sp_df%>%filter(distance_category==0),lwd=2,method="lm",alpha=0.3)+
     facet_wrap(~classification,ncol=1,scales="free_y")+
