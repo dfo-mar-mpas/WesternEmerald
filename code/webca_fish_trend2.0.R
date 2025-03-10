@@ -146,7 +146,7 @@ webca_fish_trend <- function(x,species,title){
     theme_bw()+
     scale_y_log10()+
     geom_vline(xintercept=c(1987,2017),lty=2)+
-    labs(col="Distance from MR",y="Mean abundance",x="",title=species)+
+    labs(col="Distance from MR",y="Mean abundance",x="",title=title)+
     theme(strip.background = element_rect(fill="white"))
   
   #generate the outputs as a list
