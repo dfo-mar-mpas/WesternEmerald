@@ -135,7 +135,7 @@ webca_fish_trend <- function(x,species,title){
     facet_grid(classification ~ distance_category) +
     theme_bw() +
     scale_y_log10() +
-    scale_color_manual(values = c("WSS/Outer BoF" = "blue", "WSS: Banks/Inner BoF" = "red")) +  # Map classifications to colors
+    scale_color_manual(values = c("WSS/Outer BoF" = "lightblue", "WSS: Banks/Inner BoF" = "orange")) +  # Map classifications to colors
     theme(strip.background = element_rect(fill = "white"))
   
   #fitted trend line plot
@@ -147,7 +147,8 @@ webca_fish_trend <- function(x,species,title){
     scale_y_log10()+
     geom_vline(xintercept=c(1987,2017),lty=2)+
     labs(col="Distance from MR",y="Mean abundance",x="",title=title)+
-    theme(strip.background = element_rect(fill="white"))
+    theme(strip.background = element_rect(fill="white")) +
+    scale_color_manual(values = c("0" = "lightblue", "50" = "orange", "100" ="darkgrey"))
   
   #generate the outputs as a list
   output=list()
