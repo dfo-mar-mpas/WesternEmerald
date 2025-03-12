@@ -41,8 +41,8 @@ process_species <- function(x, species, return_var = "all") {
       ),
       
       # Additional classifications
-      dist_50 = ifelse(distance_category == "50km", "Inside", "Outside"),
-      dist_100 = ifelse(distance_category == "100km", "Inside", "Outside"),
+      dist_50 = ifelse(distance_category == "50km", "Outside", ifelse(distance_category=="0km","Inside",NA)) ,
+      dist_100 = ifelse(distance_category != "0km", "Outside", "Inside"), #combines 50 and 100
       species = species
     )
 
@@ -92,23 +92,27 @@ if(return_var == "sp_df"){return(sp_df)}
 
 }
 
-webca_fish_trend <- function(x,species,title){
+webca_fish_trend <- function(x,species,title,poster=FALSE){
   
   require(scales)
   require(tidyverse)
+  
+  source("code/theme_custom.R")
   
   data_sets <- process_species(x=x,species=species,return_var = "all")
   list2env(data_sets, envir = .GlobalEnv)
   
   #comparison plots
   comp_plot <- ggplot(plot_df, aes(x = dist_cat, y = mean_abund, fill = value, shape = value, group = value)) +
+    geom_hline(data=plot_df%>%filter(value=="Inside"),aes(yintercept = mean_abund),col="grey70",linewidth=0.5,lty=2)+
     geom_errorbar(aes(ymin = pmax(mean_abund - sd_abund, 0.001), ymax = mean_abund + sd_abund), width = 0,
                   position = position_dodge(width = 0.5)) +
     geom_point(position = position_dodge(width = 0.5), size = 3) +
+   
     facet_grid(classification ~ period, scales = "free_y") +
     labs(x = "Distance Threshold", y = "Mean Abundance", fill = "", shape = "", group = "", title = title) +
     scale_shape_manual(values = c(21, 22)) +  # Distinguish between inside/outside
-    scale_fill_manual(values = c("Inside" = "red", "Outside" = "blue")) +  # Map "inside" to red and "outside" to blue
+    scale_fill_manual(values = c("Inside" = "blue", "Outside" = "red")) +  # Map "inside" to red and "outside" to blue
     theme_bw() +
     theme(strip.background = element_rect(fill = "white"))
   
@@ -159,10 +163,17 @@ webca_fish_trend <- function(x,species,title){
   output[["plot_df"]] <- plot_df
   
   #plots
-  output[["comp_plot"]] <- comp_plot
-  output[["diff_plot"]] <- diff_plot
-  output[["point_plot"]] <- point_plot
-  output[["line_plot"]] <- line_plot
+  if(!poster){output[["comp_plot"]] <- comp_plot}
+  if(poster){output[["comp_plot"]] <- comp_plot + theme_custom_2()} #fancy poster theme
+  
+  if(!poster){output[["diff_plot"]] <- diff_plot}
+  if(poster){output[["diff_plot"]] <- diff_plot+theme_custom_2()}
+  
+  if(!poster){output[["point_plot"]] <- point_plot}
+  if(poster){output[["point_plot"]] <- point_plot+theme_custom_2()}
+  
+  if(poster){output[["line_plot"]] <- line_plot}
+  if(!poster){output[["line_plot"]] <- line_plot+theme_custom_2()}
   
   return(output)
   
