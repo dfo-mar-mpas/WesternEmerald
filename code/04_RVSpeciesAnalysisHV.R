@@ -15,6 +15,7 @@ library(progressr)
 
 #source data scripting funciton
 source("code/webca_fish_trend2.0.R")
+source("code/theme_custom.R")
 
 #projections
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
@@ -53,9 +54,32 @@ focal_sp <- read.csv("data/focal_sp.csv")%>%
                           grepl("SQUIRREL",COMM) ~ "Red Hake",
                           TRUE ~ comm))
 
+
+
+#Make some plots for the ploter
+
+#Haddock
+haddock_plot <- webca_fish_trend(x=rv_df,species ="MELANOGRAMMUS AEGLEFINUS",title="Haddock",poster=TRUE)
+
+#save plots
+ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/haddock_comp_plot.png")  #gets rid of any white space. 
+
+ggsave("output/haddock_diff_plot.png",haddock_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/haddock_diff_plot.png")  #gets rid of any white space. 
+
+#silverhake
+silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake")
+
+ggsave("output/silverhake_comp_plot.png",silverhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/silverhake_comp_plot.png")  #gets rid of any white space. 
+
+ggsave("output/silverhake_diff_plot.png",silverhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/silverhake_diff_plot.png")  #gets rid of any white space. 
+
 ##example of how to pull some plots
 
-cod_plots <- webca_fish_trend(rv_df,species="GADUS MORHUA","Atlantic cod")
+cod_plots <- webca_fish_trend(rv_df,species="GADUS MORHUA",title = "Atlantic cod")
 
 cod_plots$point_plot #the plot you can make better
 
