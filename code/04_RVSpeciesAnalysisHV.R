@@ -87,13 +87,13 @@ ggsave("output/redhake_diff_plot.png",redhake_plot$diff_plot,width=24,height=18,
 knitr::plot_crop("output/redhake_diff_plot.png")   
 
 #thorny hake - shows a different outcome
-thornyhake_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny hake",poster=TRUE)
+thornyskate_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny skate",poster=TRUE)
 
-ggsave("output/thornyhake_comp_plot.png",thornyhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/redhake_comp_plot.png")   
+ggsave("output/thornyskate_comp_plot.png",thornyskate_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/thornyskate_comp_plot.png")   
 
-ggsave("output/thornyhake_diff_plot.png",thornyhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/thornyhake_diff_plot.png")   
+ggsave("output/thornyskate_diff_plot.png",thornyskate_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/thornyskate_diff_plot.png")   
 
 ##example of how to pull some plots
 
