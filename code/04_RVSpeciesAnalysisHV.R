@@ -63,37 +63,37 @@ haddock_plot <- webca_fish_trend(x=rv_df,species ="MELANOGRAMMUS AEGLEFINUS",tit
 
 #save plots
 ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/haddock_comp_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/haddock_comp_plot.png")   
 
 ggsave("output/haddock_diff_plot.png",haddock_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/haddock_diff_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/haddock_diff_plot.png")   
 
 #silverhake
-silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake")
+silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake",poster=TRUE)
 
 ggsave("output/silverhake_comp_plot.png",silverhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/silverhake_comp_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/silverhake_comp_plot.png")  
 
 ggsave("output/silverhake_diff_plot.png",silverhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/silverhake_diff_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/silverhake_diff_plot.png")   
 
-#red hake - shows a differnt outcome
-redhake_plot <- webca_fish_trend(x=rv_df,species="UROPHYCIS CHUSS",title="Red hake")
+#red hake - shows a different outcome
+redhake_plot <- webca_fish_trend(x=rv_df,species="UROPHYCIS CHUSS",title="Red hake",poster=TRUE)
 
 ggsave("output/redhake_comp_plot.png",redhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/redhake_comp_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/redhake_comp_plot.png")   
 
 ggsave("output/redhake_diff_plot.png",redhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/redhake_diff_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/redhake_diff_plot.png")   
 
-#thorny hake - shows a differnt outcome
-thornyhake_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny hake")
+#thorny hake - shows a different outcome
+thornyhake_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny hake",poster=TRUE)
 
 ggsave("output/thornyhake_comp_plot.png",thornyhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/redhake_comp_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/redhake_comp_plot.png")   
 
 ggsave("output/thornyhake_diff_plot.png",thornyhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/thornyhake_diff_plot.png")  #gets rid of any white space. 
+knitr::plot_crop("output/thornyhake_diff_plot.png")   
 
 ##example of how to pull some plots
 
