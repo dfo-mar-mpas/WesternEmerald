@@ -132,8 +132,8 @@ boot_df <- boot_dat%>%
            data.frame()%>%
            filter(!is.na(mean_wgt_ratio),!is.na(mean_count_ratio))
 
-test_df <- boot_df%>%filter(distance_category %in% c(0,50,100),
-                            #species %in% c("MELANOGRAMMUS AEGLEFINUS","GADUS MORHUA")
+test_df <- boot_df%>%filter(distance_category %in% c(0,10, 50),
+                            species %in% c("MELANOGRAMMUS AEGLEFINUS","GADUS MORHUA")
                             )%>%
   mutate(distance_category = factor(distance_category))
 
@@ -142,10 +142,10 @@ ggplot(test_df, aes(x = mean_wgt_ratio, y = distance_category, group = interacti
   geom_errorbar(aes(xmin = mean_wgt_ratio - sd_wgt_ratio, xmax = mean_wgt_ratio + sd_wgt_ratio),
                 width = 0, position = position_dodge(width = 0.3)) +  # Dodging the error bars horizontally
   geom_point(fill = "white", size = 3, shape = 21, position = position_dodge(width = 0.3)) +  # Dodging the first points horizontally
-  geom_point(aes(fill = distance_category, alpha = period), size = 3, shape = 21, position = position_dodge(width = 0.3)) +  # Dodging the second points horizontally
+  geom_point(aes(fill = period), size = 3, shape = 21, position = position_dodge(width = 0.3)) +  # Dodging the second points horizontally
   facet_grid(species ~ classification) +
   scale_alpha_manual(values = c(0.2, 0.8)) +
-  scale_x_continuous(limits = c(NA, NA)) +  # Fill in the limits here as needed
+  scale_x_continuous(limits = c(NA, NA),labels=scales::percent) +  # Fill in the limits here as needed
   labs(x = "Mean Difference Weight (scaled)", y = "Buffer (km)",
        fill = "Period", shape = "") +
   geom_vline(xintercept = 1, lty = 2, lwd = 0.4) +
