@@ -92,7 +92,7 @@ if(return_var == "sp_df"){return(sp_df)}
 
 }
 
-webca_fish_trend <- function(x,species,title,poster=FALSE){
+webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
   
   require(scales)
   require(tidyverse)
@@ -107,10 +107,10 @@ webca_fish_trend <- function(x,species,title,poster=FALSE){
     geom_hline(data=plot_df%>%filter(value=="Inside"),aes(yintercept = mean_abund),col="grey70",linewidth=0.5,lty=2)+
     geom_errorbar(aes(ymin = pmax(mean_abund - sd_abund, 0.001), ymax = mean_abund + sd_abund), width = 0,
                   position = position_dodge(width = 0.5)) +
-    geom_point(position = position_dodge(width = 0.5), size = 3) +
+    geom_point(position = position_dodge(width = 0.5), size = point_size) +
    
     facet_grid(classification ~ period, scales = "free_y") +
-    labs(x = "Distance Threshold", y = "Mean Abundance", fill = "", shape = "", group = "", title = title) +
+    labs(x = "Distance (km) from refuge", y = "Mean abundance ± sd", fill = "", shape = "", group = "", title = title) +
     scale_shape_manual(values = c(21, 22)) +  # Distinguish between inside/outside
     scale_fill_manual(values = c("Inside" = "blue", "Outside" = "red")) +  # Map "inside" to red and "outside" to blue
     theme_bw() +
@@ -119,7 +119,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE){
   
   #difference plot
   diff_plot <- ggplot(diff_df, aes(x = perc_change_abund / 100, y = dist_cat, shape = period, fill = value)) +
-    geom_point(position = position_dodge(width = 0.5), size = 3) +
+    geom_point(position = position_dodge(width = 0.5), size = point_size) +
     facet_wrap(~classification, scales = "free_x") +
     scale_shape_manual(values = c(21, 22)) +  # Use open shapes that accept fill
     scale_fill_manual(values = c("Inside" = "blue", "Outside" = "red")) +  # Fill colors for value
@@ -135,7 +135,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE){
   #messy point plot
   point_plot <- ggplot(data = sp_df, aes(x = YEAR, y = mean_count, col = classification, group = classification)) +
     geom_line() +
-    geom_point() +
+    geom_point(size=point_size) +
     facet_grid(classification ~ distance_category) +
     theme_bw() +
     scale_y_log10() +
