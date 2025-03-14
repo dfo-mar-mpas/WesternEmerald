@@ -140,8 +140,8 @@ temp_plot <- ggplot() +
   ) +
   
   # Colors and labels
-  scale_color_manual(values = c("Bottom" = "blue", "Surface" = "red")) +
-  scale_fill_manual(values = c("Bottom" = "blue", "Surface" = "red")) +
+  scale_color_manual(values = c("Bottom" = "blue", "Surface" = "orange")) +
+  scale_fill_manual(values = c("Bottom" = "blue", "Surface" = "orange")) +
   labs(
     x = "",
     y = "Temperature (°C) ± SD",
