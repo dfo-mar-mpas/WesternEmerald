@@ -69,7 +69,7 @@ ggsave("output/haddock_diff_plot.png",haddock_plot$diff_plot+theme_big(),width=2
 knitr::plot_crop("output/haddock_diff_plot.png")   
 
 #silverhake
-silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake",poster=FALSE)
+silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake",poster=FALSE,point_size = 10)
 
 ggsave("output/silverhake_comp_plot.png",silverhake_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/silverhake_comp_plot.png")  
@@ -78,7 +78,7 @@ ggsave("output/silverhake_diff_plot.png",silverhake_plot$diff_plot+theme_big(),w
 knitr::plot_crop("output/silverhake_diff_plot.png")   
 
 #red hake - shows a different outcome
-redhake_plot <- webca_fish_trend(x=rv_df,species="UROPHYCIS CHUSS",title="Red hake",poster=FALSE)
+redhake_plot <- webca_fish_trend(x=rv_df,species="UROPHYCIS CHUSS",title="Red hake",poster=FALSE,point_size = 10)
 
 ggsave("output/redhake_comp_plot.png",redhake_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/redhake_comp_plot.png")   
@@ -87,7 +87,7 @@ ggsave("output/redhake_diff_plot.png",redhake_plot$diff_plot+theme_big(),width=2
 knitr::plot_crop("output/redhake_diff_plot.png")   
 
 #thorny hake - shows a different outcome
-thornyskate_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny skate",poster=FALSE)
+thornyskate_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny skate",poster=FALSE,point_size = 10)
 
 ggsave("output/thornyskate_comp_plot.png",thornyskate_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/thornyskate_comp_plot.png")   
