@@ -149,10 +149,11 @@ temp_plot <- ggplot() +
     fill = ""
   ) +
   theme_bw() +
-  theme_custom()+
   theme( legend.position = "inside",
          legend.position.inside = c(0.85, 0.05),
-         legend.text = element_text(color = "grey40",size=18))
+         legend.text = element_text(color = "grey40",size=18),
+         axis.text=element_text(size=15),
+         axis.title=element_text(size=17))
   
   
   
