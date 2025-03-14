@@ -54,45 +54,45 @@ focal_sp <- read.csv("data/focal_sp.csv")%>%
                           grepl("SQUIRREL",COMM) ~ "Red Hake",
                           TRUE ~ comm))
 
-
-
 #Make some plots for the ploter
 
 #Haddock
-haddock_plot <- webca_fish_trend(x=rv_df,species ="MELANOGRAMMUS AEGLEFINUS",title="Haddock",poster=TRUE)
+haddock_plot <- webca_fish_trend(x=rv_df,species ="MELANOGRAMMUS AEGLEFINUS",title="Haddock",poster=FALSE,point_size = 10)
 
 #save plots
-ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/haddock_comp_plot.png")   
 
-ggsave("output/haddock_diff_plot.png",haddock_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+
+ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/haddock_comp_plot.png")  
+
+ggsave("output/haddock_diff_plot.png",haddock_plot$diff_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/haddock_diff_plot.png")   
 
 #silverhake
-silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake",poster=TRUE)
+silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake",poster=FALSE)
 
-ggsave("output/silverhake_comp_plot.png",silverhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
+ggsave("output/silverhake_comp_plot.png",silverhake_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/silverhake_comp_plot.png")  
 
-ggsave("output/silverhake_diff_plot.png",silverhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+ggsave("output/silverhake_diff_plot.png",silverhake_plot$diff_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/silverhake_diff_plot.png")   
 
 #red hake - shows a different outcome
-redhake_plot <- webca_fish_trend(x=rv_df,species="UROPHYCIS CHUSS",title="Red hake",poster=TRUE)
+redhake_plot <- webca_fish_trend(x=rv_df,species="UROPHYCIS CHUSS",title="Red hake",poster=FALSE)
 
-ggsave("output/redhake_comp_plot.png",redhake_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
+ggsave("output/redhake_comp_plot.png",redhake_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/redhake_comp_plot.png")   
 
-ggsave("output/redhake_diff_plot.png",redhake_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+ggsave("output/redhake_diff_plot.png",redhake_plot$diff_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/redhake_diff_plot.png")   
 
 #thorny hake - shows a different outcome
-thornyskate_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny skate",poster=TRUE)
+thornyskate_plot <- webca_fish_trend(x=rv_df,species="AMBLYRAJA RADIATA",title="Thorny skate",poster=FALSE)
 
-ggsave("output/thornyskate_comp_plot.png",thornyskate_plot$comp_plot,width=24,height=18,units = "in",dpi=600)
+ggsave("output/thornyskate_comp_plot.png",thornyskate_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/thornyskate_comp_plot.png")   
 
-ggsave("output/thornyskate_diff_plot.png",thornyskate_plot$diff_plot,width=24,height=18,units = "in",dpi=600)
+ggsave("output/thornyskate_diff_plot.png",thornyskate_plot$diff_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/thornyskate_diff_plot.png")   
 
 ##example of how to pull some plots
