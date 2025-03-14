@@ -68,3 +68,13 @@ theme_custom_2 <- function(base_size = 12, base_family = "") { #this is a custom
     strip.text = element_text(color = "grey40", size = rel(0.9))
   )
 }
+
+theme_big <- function(base_size = 12, base_family = "") {
+  
+  theme(axis.text = element_text(size=20),
+        axis.title = element_text(size=25),
+        legend.text = element_text(size=22),
+        strip.text = element_text(size=25),
+        plot.title = element_text(size=30))
+  
+}
