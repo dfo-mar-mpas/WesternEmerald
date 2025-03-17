@@ -61,7 +61,7 @@ haddock_plot <- webca_fish_trend(x=rv_df,species ="MELANOGRAMMUS AEGLEFINUS",tit
 
 #save plots
 
-ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
+ggsave("output/haddock_point_plot.png",haddock_plot$point_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/haddock_point_plot.png")  
 
 ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
@@ -73,8 +73,8 @@ knitr::plot_crop("output/haddock_diff_plot.png")
 #silverhake
 silverhake_plot <- webca_fish_trend(x=rv_df,species="MERLUCCIUS BILINEARIS",title="Silver hake",poster=FALSE,point_size = 10)
 
-ggsave("output/silverhake_comp_plot.png",silverhake_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
-knitr::plot_crop("output/silverhake_comp_plot.png")  
+ggsave("output/silverhake_point_plot.png",silverhake_plot$point_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/silverhake_point_plot.png")  
 
 ggsave("output/silverhake_diff_plot.png",silverhake_plot$diff_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/silverhake_diff_plot.png")   
