@@ -140,7 +140,9 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     theme_bw() +
     scale_y_log10() +
     scale_color_manual(values = c("WSS/Outer BoF" = "cornflowerblue", "WSS: Banks/Inner BoF" = "orange")) +  # Map classifications to colors
-    theme(strip.background = element_rect(fill = "white"))
+    theme(strip.background = element_rect(fill = "white"))+
+    labs(
+      title = title)
   
   #fitted trend line plot
   line_plot <- ggplot(data=sp_df,aes(x=YEAR,y=mean_count,col=distance_category,group=distance_category))+
