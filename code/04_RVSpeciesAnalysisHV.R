@@ -61,6 +61,8 @@ haddock_plot <- webca_fish_trend(x=rv_df,species ="MELANOGRAMMUS AEGLEFINUS",tit
 
 #save plots
 
+ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
+knitr::plot_crop("output/haddock_point_plot.png")  
 
 ggsave("output/haddock_comp_plot.png",haddock_plot$comp_plot+theme_big(),width=24,height=18,units = "in",dpi=600)
 knitr::plot_crop("output/haddock_comp_plot.png")  

@@ -117,7 +117,11 @@ p1 <- ggplot()+
   geom_sf(data=network)+
   geom_sf(data=network%>%filter(SiteName_E == "Western/Emerald Banks Marine Refuge"),fill="orange")+
   coord_sf(expand=0,xlim=plot_lims[c(1,3)],ylim=plot_lims[c(2,4)])+
-  theme_bw()
+  theme_bw()+
+  theme(axis.text=element_blank(),
+        axis.title = element_blank(),
+        plot.margin = margin(0, 0, 0, 0, "pt"),
+        legend.position = "none")
 
 ggsave("output/readmeplot.png",p1,width=3.5,height=4.5,units="in",dpi=300) #there is some guess work with the height and width ratio. I am not sure of the best way to do it. 
 knitr::plot_crop("output/readmeplot.png")  
