@@ -112,7 +112,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     facet_grid(classification ~ period, scales = "free_y") +
     labs(x = "Distance (km) from refuge", y = "Mean abundance ± sd", fill = "", shape = "", group = "", title = title) +
     scale_shape_manual(values = c(21, 22)) +  # Distinguish between inside/outside
-    scale_fill_manual(values = c("Inside" = "lightblue", "Outside" = "orange")) +  # Map "inside" to red and "outside" to blue
+    scale_fill_manual(values = c("Inside" = "blue", "Outside" = "orange")) +  # Map "inside" to red and "outside" to blue
     theme_bw() +
     theme(strip.background = element_rect(fill = "white"))
   
@@ -122,7 +122,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     geom_point(position = position_dodge(width = 0.5), size = point_size) +
     facet_wrap(~classification, scales = "free_x") +
     scale_shape_manual(values = c(21, 22)) +  # Use open shapes that accept fill
-    scale_fill_manual(values = c("Inside" = "lightblue", "Outside" = "orange")) +  # Fill colors for value
+    scale_fill_manual(values = c("Inside" = "blue", "Outside" = "orange")) +  # Fill colors for value
     scale_x_continuous(labels = scales::percent_format()) +  # Format x-axis as a percentage
     labs(x = "% Change from Pre-collapse", y = "Distance (km) from refuge", 
          fill = "Value (Inside/Outside)", shape = "Period") +
