@@ -115,7 +115,7 @@ p1 <- ggplot()+
   geom_sf(data=basemap)+
   geom_sf(data=basemap%>%filter(country=="Canada"),fill="grey60")+
   geom_sf(data=network)+
-  geom_sf(data=network%>%filter(SiteName_E == "Western/Emerald Banks Marine Refuge"),fill="coral2")+
+  geom_sf(data=network%>%filter(SiteName_E == "Western/Emerald Banks Marine Refuge"),fill="orange")+
   coord_sf(expand=0,xlim=plot_lims[c(1,3)],ylim=plot_lims[c(2,4)])+
   theme_bw()
 
