@@ -223,7 +223,7 @@ p3 <-ggplot()+
         legend.text = element_text(size = 14)    # Bigger legend text
   )
 
-ggsave("output/posterplot3.png",p3,width=12,height=12,units = "in",dpi=300)
+ggsave("output/posterplot3.png",p3,width=48,height=136,units = "in",dpi=300)
 
 
 #### code for rv formattingg
