@@ -140,7 +140,8 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     theme_bw() +
     scale_y_log10() +
     scale_color_manual(values = c("WSS/Outer BoF" = "cornflowerblue", "WSS: Banks/Inner BoF" = "orange")) +  # Map classifications to colors
-    theme(strip.background = element_rect(fill = "white"))+
+    theme(strip.background = element_rect(fill = "white"), legend.position = "none")+
+  
     labs(
       title = title)
   

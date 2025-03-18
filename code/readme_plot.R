@@ -76,7 +76,7 @@ contour_shallow <- as.contour(mar_bathy, levels = shallow)%>%
 ##load in RV stations
 
 webca <- network %>%
-  filter(site == "Western/Emerald Banks Marine Refuge") %>%
+  filter(SiteName_E == "Western/Emerald Banks Marine Refuge") %>%
   st_transform(CanProj) %>%
   st_make_valid()%>%
   st_union() %>%
@@ -174,7 +174,7 @@ ggsave("output/posterplot.png",p2,width=48,height=36,units = "in",dpi=600)
 
 
 plot_lims2 <- network%>%
-  filter(site == "Western/Emerald Banks Marine Refuge")%>%
+  filter(SiteName_E == "Western/Emerald Banks Marine Refuge")%>%
   st_bbox()%>% #get the bounding box
   st_as_sfc()%>%
   st_transform(utm)%>% #convert to a planar (km) projection
@@ -207,18 +207,23 @@ p3 <-ggplot()+
   geom_sf(data=basemap%>%filter(country=="Canada"),fill="grey60")+
   geom_sf(data=buffer_poly,aes(fill=buffer),alpha=0.8)+
   geom_sf(data=contour_deep,linetype=2,linewidth=1,col="grey10")+
-  geom_sf(data=rv_formatted%>%filter(YEAR>2015),aes(fill=buffer),shape=21,col="black",size=10)+
-  geom_sf(data=network%>%filter(site != "Western/Emerald Banks Marine Refuge"),fill="grey80",alpha=0.7)+
-  geom_sf(data=network%>%filter(site == "Western/Emerald Banks Marine Refuge"),fill=NA,linewidth=4,alpha=0.7)+
+  geom_sf(data=rv_formatted%>%filter(YEAR>2015),aes(fill=buffer),shape=21,col="black",size=2, stroke=0.5)+
+  geom_sf(data=network%>%filter(SiteName_E != "Western/Emerald Banks Marine Refuge"),fill="grey80",alpha=0.7)+
+  geom_sf(data=network%>%filter(SiteName_E == "Western/Emerald Banks Marine Refuge"),fill=NA,linewidth=1,alpha=0.7)+
   scale_fill_manual(values = c("50" = "orange", "100" = "cornflowerblue"))+
   coord_sf(expand=0,xlim=plot_lims2[c(1,3)],ylim=plot_lims2[c(2,4)])+
   theme_bw()+
-  theme(axis.text=element_blank(),
+  theme(axis.text = element_blank(),
         axis.title = element_blank(),
         plot.margin = margin(0, 0, 0, 0, "pt"),
-        legend.position="none")
+        legend.position = c(0.8, 0.2),
+        legend.background = element_rect(fill = "white", color = NA),
+        legend.key = element_blank(),
+        legend.title = element_text(size = 16),  # Bigger legend title
+        legend.text = element_text(size = 14)    # Bigger legend text
+  )
 
-ggsave("output/posterplot3.png",p3,width=48,height=36,units = "in",dpi=300)
+ggsave("output/posterplot3.png",p3,width=12,height=12,units = "in",dpi=300)
 
 
 #### code for rv formattingg
