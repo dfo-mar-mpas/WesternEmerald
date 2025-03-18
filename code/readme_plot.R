@@ -213,8 +213,11 @@ p3 <-ggplot()+
   scale_fill_manual(values = c("50" = "orange", "100" = "cornflowerblue"))+
   coord_sf(expand=0,xlim=plot_lims2[c(1,3)],ylim=plot_lims2[c(2,4)])+
   theme_bw()+
-  theme(axis.text = element_blank(),
-        axis.title = element_blank(),
+  theme(axis.text = element_blank(),         # Remove axis text
+        axis.ticks = element_blank(),        # Remove axis ticks
+        axis.title = element_blank(),        # Remove axis titles
+        panel.border = element_blank(),      # Remove panel border
+        panel.grid = element_blank(),
         plot.margin = margin(0, 0, 0, 0, "pt"),
         legend.position = c(0.8, 0.2),
         legend.background = element_rect(fill = "white", color = NA),
@@ -223,7 +226,7 @@ p3 <-ggplot()+
         legend.text = element_text(size = 14)    # Bigger legend text
   )
 
-ggsave("output/posterplot3.png",p3,width=48,height=136,units = "in",dpi=300)
+ggsave("output/posterplot3.png",p3,width=12,height=9,units = "in",dpi=300)
 
 
 #### code for rv formattingg
