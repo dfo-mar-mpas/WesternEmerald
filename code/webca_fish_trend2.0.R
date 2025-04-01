@@ -112,7 +112,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     facet_grid(classification ~ period, scales = "free_y") +
     labs(x = "Distance (km) from refuge", y = "Mean abundance ± sd", fill = "", shape = "", group = "", title = title) +
     scale_shape_manual(values = c(21, 22)) +  # Distinguish between inside/outside
-    scale_fill_manual(values = c("Inside" = "blue", "Outside" = "red")) +  # Map "inside" to red and "outside" to blue
+    scale_fill_manual(values = c("Inside" = "cornflowerblue", "Outside" = "orange")) +  # Map "inside" to red and "outside" to blue
     theme_bw() +
     theme(strip.background = element_rect(fill = "white"))
   
@@ -122,10 +122,10 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     geom_point(position = position_dodge(width = 0.5), size = point_size) +
     facet_wrap(~classification, scales = "free_x") +
     scale_shape_manual(values = c(21, 22)) +  # Use open shapes that accept fill
-    scale_fill_manual(values = c("Inside" = "blue", "Outside" = "red")) +  # Fill colors for value
+    scale_fill_manual(values = c("Inside" = "cornflowerblue", "Outside" = "orange")) +  # Fill colors for value
     scale_x_continuous(labels = scales::percent_format()) +  # Format x-axis as a percentage
     labs(x = "% Change from Pre-collapse", y = "Distance (km) from refuge", 
-         fill = "Value (Inside/Outside)", shape = "Period") +
+         fill = "Value (Inside/Outside)", shape = "Period", title = title) +
     geom_vline(xintercept = 0, linetype = "dashed") +
     theme_bw() +
     theme(strip.background = element_rect(fill = "white"), legend.position = "right") +
@@ -139,8 +139,11 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     facet_grid(classification ~ distance_category) +
     theme_bw() +
     scale_y_log10() +
-    scale_color_manual(values = c("WSS/Outer BoF" = "lightblue", "WSS: Banks/Inner BoF" = "orange")) +  # Map classifications to colors
-    theme(strip.background = element_rect(fill = "white"))
+    scale_color_manual(values = c("WSS/Outer BoF" = "cornflowerblue", "WSS: Banks/Inner BoF" = "orange")) +  # Map classifications to colors
+    theme(strip.background = element_rect(fill = "white"), legend.position = "none")+
+  
+    labs(
+      title = title)
   
   #fitted trend line plot
   line_plot <- ggplot(data=sp_df,aes(x=YEAR,y=mean_count,col=distance_category,group=distance_category))+
@@ -152,7 +155,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     geom_vline(xintercept=c(1987,2017),lty=2)+
     labs(col="Distance from MR",y="Mean abundance",x="",title=title)+
     theme(strip.background = element_rect(fill="white")) +
-    scale_color_manual(values = c("0" = "lightblue", "50" = "orange", "100" ="darkgrey"))
+    scale_color_manual(values = c("0" = "cornflowerblue", "50" = "orange", "100" ="darkgrey"))
   
   #generate the outputs as a list
   output=list()

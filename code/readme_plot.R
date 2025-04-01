@@ -46,6 +46,14 @@ basemap <- rbind(ne_states(country = "Canada",returnclass = "sf")%>%
                    st_as_sf()%>%
                    mutate(country="USA"))
 
+bioclass <- read_sf("data/shapefiles/bioclassification_clusters.shp") %>%
+  filter(bioregion == "MAR", cl %in% c(5, 6)) %>%  # Filter for bioclasses 5 and 6
+  mutate(classification = case_when(
+    bioregion == 'MAR' & cl == 6 ~ 'WSS/Outer BoF',
+    bioregion == 'MAR' & cl == 5 ~ 'WSS: Banks/Inner BoF'
+  )) %>%
+  st_transform(CanProj)
+
 #set up plot limits
 plot_lims <- bioregion%>%
              st_bbox()%>% #get the bounding box
@@ -153,7 +161,6 @@ if (current_ratio < target_ratio) {
 }
 
 
-
 p2 <- ggplot()+
   geom_sf(data=bioregion,fill=NA)+
   geom_sf(data=contour_deep,linetype=2,linewidth=0.5,col="grey30")+
@@ -176,9 +183,6 @@ knitr::plot_crop("output/posterplot2.png")
 
 #more of a NS focus
 
-
-
-
 p3 <-ggplot()+
   geom_sf(data=bioregion,fill=NA)+
   geom_sf(data=basemap)+
@@ -198,6 +202,52 @@ p3 <-ggplot()+
 
 ggsave("output/posterplot3.png",p3,width=48,height=36,units = "in",dpi=300)
 
+
+## with bioclassificaiton
+bioclass <- read_sf("data/shapefiles/bioclassification_clusters.shp")%>%
+  filter(bioregion=="MAR")%>%
+  mutate(classification =  case_when(
+    bioregion == 'MAR' & cl == 6 ~ 'WSS/Outer BoF',
+    bioregion == 'MAR' & cl == 5 ~ 'WSS: Banks/Inner BoF',
+    bioregion == 'MAR' & cl == 4 ~ 'ESS: Banks',
+    bioregion == 'MAR' & cl == 3 ~ 'ESS',
+    bioregion == 'MAR' & cl == 2 ~ 'Laurentian Channel/Shelf Break',
+    bioregion == 'MAR' & cl == 1 ~ 'Slope'
+  ),
+  classification = factor(classification,levels=c('WSS/Outer BoF','WSS: Banks/Inner BoF','ESS: Banks',
+                                                  'ESS','Laurentian Channel/Shelf Break','Slope')))%>%
+  st_transform(CanProj)
+
+bioclass_palette <- viridis(6)
+
+webca_class <- bioclass%>%
+  filter(classification %in% c('WSS/Outer BoF','WSS: Banks/Inner BoF'))%>%
+  st_intersection(webca)
+
+webca_lim <- network%>%
+  filter(site == "Western/Emerald Banks Marine Refuge")%>%
+  st_make_valid()%>%
+  st_transform(utm)%>%
+  st_buffer(75)%>%
+  st_transform(CanProj)%>%
+  st_bbox()
+
+
+p4 <- ggplot()+
+  geom_sf(data=basemap)+
+  geom_sf(data=webca_class,aes(fill=classification))+
+  geom_sf(data=network,fill=NA)+
+  theme_bw()+
+  coord_sf(expand=0,xlim=webca_lim[c(1,3)],ylim=webca_lim[c(2,4)])+
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.76,0.1),
+        legend.title=element_blank(),
+        legend.background = element_blank(),
+        legend.text = element_text(size=20))+
+  scale_fill_manual(values= c( "orange","cornflowerblue"))
+
+ggsave("output/webca_bioclass_poster.png",p4,width=12,height=12,units = "in",dpi=300)
+knitr::plot_crop("output/webca_bioclass_poster.png")  
 
 #### code for rv formattingg
 
