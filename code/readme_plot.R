@@ -124,51 +124,6 @@ knitr::plot_crop("output/readmeplot.png")
 
 #map for the poster
 
-
-current_width <- plot_lims["xmax"] - plot_lims["xmin"]
-current_height <- plot_lims["ymax"] - plot_lims["ymin"]
-current_ratio <- current_width / current_height
-
-# Target ratio is 4:3
-target_ratio <- 4/3
-
-if (current_ratio < target_ratio) {
-  # Need to increase width
-  width_to_add <- (target_ratio * current_height) - current_width
-  plot_lims["xmin"] <- plot_lims["xmin"] - (width_to_add / 2)
-  plot_lims["xmax"] <- plot_lims["xmax"] + (width_to_add / 2)
-} else if (current_ratio > target_ratio) {
-  # Need to increase height
-  height_to_add <- (current_width / target_ratio) - current_height
-  plot_lims["ymin"] <- plot_lims["ymin"] - (height_to_add / 2)
-  plot_lims["ymax"] <- plot_lims["ymax"] + (height_to_add / 2)
-}
-
-
-
-
-p2 <- ggplot()+
-  geom_sf(data=bioregion,fill=NA)+
-  geom_sf(data=contour_deep,linetype=2,linewidth=0.5,col="grey30")+
-  geom_sf(data=basemap)+
-  geom_sf(data=basemap%>%filter(country=="Canada"),fill="grey60")+
-  geom_sf(data=buffer_poly,aes(fill=buffer),alpha=0.8)+
-  geom_sf(data=rv_formatted%>%filter(YEAR>2015),aes(fill=buffer),shape=21,col="black")+
-  geom_sf(data=network%>%filter(site != "Western/Emerald Banks Marine Refuge"),fill="grey80",alpha=0.7)+
-  geom_sf(data=network%>%filter(site == "Western/Emerald Banks Marine Refuge"),fill=NA,linewidth=1.3,alpha=0.7)+
-  scale_fill_manual(values = c("50" = "orange", "100" = "cornflowerblue"))+
-  coord_sf(expand=0,xlim=plot_lims[c(1,3)],ylim=plot_lims[c(2,4)])+
-  theme_bw()+
-  theme(axis.text=element_blank(),
-        axis.title = element_blank(),
-        plot.margin = margin(0, 0, 0, 0, "pt"),
-        legend.position = "none")
-
-ggsave("output/posterplot.png",p2,width=48,height=36,units = "in",dpi=600)
-
-#more of a NS focus
-
-
 plot_lims2 <- network%>%
   filter(site == "Western/Emerald Banks Marine Refuge")%>%
   st_bbox()%>% #get the bounding box
@@ -196,6 +151,33 @@ if (current_ratio < target_ratio) {
   plot_lims2["ymin"] <- plot_lims2["ymin"] - (height_to_add / 2)
   plot_lims2["ymax"] <- plot_lims2["ymax"] + (height_to_add / 2)
 }
+
+
+
+p2 <- ggplot()+
+  geom_sf(data=bioregion,fill=NA)+
+  geom_sf(data=contour_deep,linetype=2,linewidth=0.5,col="grey30")+
+  geom_sf(data=basemap)+
+  geom_sf(data=basemap%>%filter(country=="Canada"),fill="grey60")+
+  #geom_sf(data=buffer_poly,aes(fill=buffer),alpha=0.8)+
+  #geom_sf(data=rv_formatted%>%filter(YEAR>2015),aes(fill=buffer),shape=21,col="black")+
+  geom_sf(data=network%>%filter(site != "Western/Emerald Banks Marine Refuge"),fill="grey80",alpha=0.7)+
+  geom_sf(data=network%>%filter(site == "Western/Emerald Banks Marine Refuge"),fill="orange",linewidth=1.3,alpha=0.7)+
+  #scale_fill_manual(values = c("50" = "orange", "100" = "cornflowerblue"))+
+  coord_sf(expand=0,xlim=plot_lims2[c(1,3)],ylim=plot_lims2[c(2,4)])+
+  theme_bw()+
+  theme(axis.text=element_blank(),
+        axis.title = element_blank(),
+        plot.margin = margin(0, 0, 0, 0, "pt"),
+        legend.position = "none")
+
+ggsave("output/posterplot2.png",p2,width=48,height=36,units = "in",dpi=300)
+knitr::plot_crop("output/posterplot2.png")  
+
+#more of a NS focus
+
+
+
 
 p3 <-ggplot()+
   geom_sf(data=bioregion,fill=NA)+
