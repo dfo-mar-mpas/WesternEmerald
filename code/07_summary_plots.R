@@ -124,3 +124,114 @@ ggsave("output/abund_diff_webmr_all.png",boxplot_abund,height=10,width=7.5,units
 ggsave("output/percent_diff_webmr_all.png",percent_boxplot,height=10,width=7.5,units="in",dpi=300)
 
 
+
+## Period abundance changes -------------- these only half make sense and I just used AI to adapte the code from above. So not sure these should be used keeping the code anyway
+
+# Step 1: Calculate the baseline values (pre-collapse period)
+period_baseline_data <- all_combo_data %>%
+  filter(period == "pre-collapse") %>%
+  group_by(species, classification, distance_category) %>%
+  summarize(
+    baseline_abund = mean(mean_abund, na.rm = TRUE),
+    baseline_count = mean(mean_count, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Step 2: Calculate differences between periods
+period_diff_data <- all_combo_data %>%
+  # Only include post-collapse and recent periods
+  filter(period != "pre-collapse") %>%
+  # Group by the relevant factors
+  group_by(species, classification, distance_category, period) %>%
+  # Calculate mean values for each group
+  summarize(
+    mean_abund = mean(mean_abund, na.rm = TRUE),
+    mean_count = mean(mean_count, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  # Join with the baseline data
+  left_join(period_baseline_data, 
+            by = c("species", "classification", "distance_category")) %>%
+  # Calculate absolute and percent differences
+  mutate(
+    # Absolute differences
+    diff_abund = mean_abund - baseline_abund,
+    diff_count = mean_count - baseline_count,
+    
+    # Percent differences
+    pct_diff_abund = (mean_abund - baseline_abund) / baseline_abund * 100,
+    pct_diff_count = (mean_count - baseline_count) / baseline_count * 100
+  )
+
+# Calculate reasonable y-axis limits for each facet for abundance difference
+y_limits_abund <- period_diff_data %>%
+  group_by(species, classification) %>%
+  summarize(
+    y_max = quantile(diff_abund, 0.95, na.rm = TRUE),
+    y_min = quantile(diff_abund, 0.05, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Calculate reasonable y-axis limits for each facet for percent difference
+y_limits_pct <- period_diff_data %>%
+  group_by(species, classification) %>%
+  summarize(
+    y_max = quantile(pct_diff_abund, 0.95, na.rm = TRUE),
+    y_min = quantile(pct_diff_abund, 0.05, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Plot 1: Absolute abundance differences
+period_boxplot_abund <- ggplot(period_diff_data, aes(x = distance_category, y = diff_abund, fill = period)) +
+  # Add reference line at zero
+  geom_hline(yintercept = 0, lty = 2, color = "darkgray") +
+  # Add invisible points at the limit values to control the scale
+  # geom_blank(data = y_limits_abund, aes(y = y_max, x = "0km")) +
+  # geom_blank(data = y_limits_abund, aes(y = y_min, x = "0km")) +
+  # # Actual boxplot
+  geom_point(position = position_dodge(width = 0.8), size=3,shape=21) +
+  # Add points for the mean
+  facet_grid(species ~ classification, scales = "free_y") +
+  scale_fill_brewer(palette = "Set2", name = "Period") +
+  labs(
+    title = "Change in Abundance from Pre-Collapse Period",
+    subtitle = "Comparing post-collapse and recent periods to pre-collapse baseline",
+    x = "Distance Category",
+    y = "Difference in Mean Abundance from Pre-Collapse"
+  ) +
+  theme_bw() +
+  theme(
+    legend.title = element_blank(),
+    strip.background = element_rect(fill = "white"),
+    strip.text = element_text(face = "bold"),
+    panel.spacing = unit(1, "lines")
+  )
+
+# Plot 2: Percent differences
+period_boxplot_pct <- ggplot(period_diff_data, aes(x = distance_category, y = pct_diff_abund, fill = period)) +
+  # Add reference line at zero
+  geom_hline(yintercept = 0, lty = 2, color = "darkgray") +
+  # Add invisible points at the limit values to control the scale
+  # geom_blank(data = y_limits_pct, aes(y = y_max, x = "0km")) +
+  # geom_blank(data = y_limits_pct, aes(y = y_min, x = "0km")) +
+  # Actual boxplot
+  geom_boxplot(position = position_dodge(width = 0.8), width = 0.7, alpha = 0.7, outlier.shape = NA) +
+  # Add points for the mean
+  stat_summary(aes(group = period), fun = mean, geom = "point", 
+               position = position_dodge(width = 0.8), color = "black", size = 2, shape = 18) +
+  facet_grid(species ~ classification, scales = "free_y") +
+  scale_fill_brewer(palette = "Set2", name = "Period") +
+  labs(
+    title = "Percent Change in Abundance from Pre-Collapse Period",
+    subtitle = "Comparing post-collapse and recent periods to pre-collapse baseline",
+    x = "Distance Category",
+    y = "% Difference in Abundance from Pre-Collapse"
+  ) +
+  theme_bw() +
+  theme(
+    legend.title = element_blank(),
+    strip.background = element_rect(fill = "white"),
+    strip.text = element_text(face = "bold"),
+    panel.spacing = unit(1, "lines")
+  )
+
