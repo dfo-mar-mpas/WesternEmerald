@@ -64,13 +64,13 @@ process_species <- function(x, species, return_var = "all") {
   
   baseline_df <- plot_df %>%
     filter(period == "pre-collapse") %>%
-    select(classification, value, dist_cat, baseline_mean_abund = mean_abund)
+    dplyr::select(classification, value, dist_cat, baseline_mean_abund = mean_abund)
   
   diff_df <- plot_df %>%
     left_join(baseline_df, by = c("classification", "value", "dist_cat"))%>%
     filter(period != "pre-collapse") %>% # Exclude the baseline period
     mutate(perc_change_abund = 100 * (mean_abund - baseline_mean_abund) / baseline_mean_abund) %>%
-    select(period, classification, value, dist_cat, perc_change_abund)%>%
+    dplyr::select(period, classification, value, dist_cat, perc_change_abund)%>%
     mutate(species=species)
   
 #return outputs --- 
@@ -108,7 +108,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     geom_errorbar(aes(ymin = pmax(mean_abund - sd_abund, 0.001), ymax = mean_abund + sd_abund), width = 0,
                   position = position_dodge(width = 0.5)) +
     geom_point(position = position_dodge(width = 0.5), size = point_size) +
-   
+    
     facet_grid(classification ~ period, scales = "free_y") +
     labs(x = "Distance (km) from refuge", y = "Mean abundance ± sd", fill = "", shape = "", group = "", title = title) +
     scale_shape_manual(values = c(21, 22)) +  # Distinguish between inside/outside
@@ -141,7 +141,7 @@ webca_fish_trend <- function(x,species,title,poster=FALSE,point_size=1){
     scale_y_log10() +
     scale_color_manual(values = c("WSS/Outer BoF" = "cornflowerblue", "WSS: Banks/Inner BoF" = "orange")) +  # Map classifications to colors
     theme(strip.background = element_rect(fill = "white"), legend.position = "none")+
-  
+    
     labs(
       title = title)
   
