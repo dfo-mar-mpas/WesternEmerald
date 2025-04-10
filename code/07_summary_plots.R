@@ -76,6 +76,12 @@ all_combo_data <- map_dfr(all_species_data, ~.x$combo_data)
 # Combine all the difference data
 all_diff_data <- map_dfr(all_species_data, ~.x$diff_data)
 
+#gear change year filter
+all_combo_data <- all_combo_data%>%filter(YEAR>1984)
+all_diff_data <- all_diff_data%>%
+                 filter(YEAR>1984)%>%
+                  mutate(period = factor(period,levels=c("pre-collapse","post-collapse","recent")))
+
 # Create boxplot for abundance
 boxplot_abund <- ggplot(all_combo_data, aes(x = period, y = mean_abund, fill = distance_category)) +
   geom_boxplot(position = position_dodge(width = 0.8), width = 0.7, alpha = 0.7,outliers = FALSE) +
@@ -95,6 +101,7 @@ boxplot_abund <- ggplot(all_combo_data, aes(x = period, y = mean_abund, fill = d
     strip.text = element_text(face = "bold"),
     panel.spacing = unit(1, "lines")
   )
+
 
 # Create boxplot for percent difference
 percent_boxplot <- ggplot(all_diff_data, aes(x = period, y = diff_abund, fill = distance_category)) +
