@@ -90,7 +90,6 @@ boxplot_abund <- ggplot(all_combo_data, aes(x = period, y = mean_abund, fill = d
   facet_grid(species ~ classification,scales="free_y") +  # Two-way facet with species and classification
   scale_fill_brewer(palette = "Set1", name = "") +
   labs(
-    title = "Abundance by Species, Classification, and Period",
     x = "",
     y = "Mean annual abundance"
   ) +
@@ -121,7 +120,7 @@ percent_boxplot <- ggplot(all_diff_data, aes(x = period, y = diff_abund, fill = 
   scale_fill_brewer(palette = "Set1", name = "")
 
 #save outputs
-ggsave("output/abund_diff_webmr_all.png",boxplot_abund,height=10,width=5,units="in",dpi=300)
-ggsave("output/percent_diff_webmr_all.png",percent_boxplot,height=10,width=5,units="in",dpi=300)
+ggsave("output/abund_diff_webmr_all.png",boxplot_abund,height=10,width=7.5,units="in",dpi=300)
+ggsave("output/percent_diff_webmr_all.png",percent_boxplot,height=10,width=7.5,units="in",dpi=300)
 
 
