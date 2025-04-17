@@ -7,8 +7,8 @@ library(purrr)
 source("code/webca_fish_trend2.0.R")
 
 #species to make plots form
-focus_df <- data.frame(latin = c("MELANOGRAMMUS AEGLEFINUS","GADUS MORHUA","MERLUCCIUS BILINEARIS","UROPHYCIS CHUSS","AMBLYRAJA RADIATA"),
-                       common = c("Haddock","Atlantic cod","Sliver hake","Red hake","Thorny skate"))
+focus_df <- data.frame(latin = c("MELANOGRAMMUS AEGLEFINUS","GADUS MORHUA","MERLUCCIUS BILINEARIS","SEBASTES","POLLACHIUS VIRENS"),
+                       common = c("Haddock","Atlantic cod","Sliver hake","Redfish","Pollock"))
 
 # Function to process a single species
 process_single_species <- function(species_latin, species_common) {
